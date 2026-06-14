@@ -8,7 +8,7 @@ public class DBConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/transaction_db";
     private static final String USERNAME = "root";         // your MySQL username
-    private static final String PASSWORD = "root123"; // your MySQL password
+    private static final String PASSWORD = "enter your password"; // your MySQL password
 
     private static Connection connection = null;
 
