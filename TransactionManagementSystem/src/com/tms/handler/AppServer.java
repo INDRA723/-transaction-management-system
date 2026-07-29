@@ -21,8 +21,8 @@ public class AppServer {
 
     public static void main(String[] args) throws Exception {
         DBConnection.getConnection();
-
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+   int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+   HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // API routes
         server.createContext("/api/accounts", AppServer::handleAccounts);
@@ -37,8 +37,7 @@ public class AppServer {
         server.createContext("/", AppServer::handleFrontend);
 
         server.start();
-        System.out.println("✔ Server running at http://localhost:8080");
-        System.out.println("  Open your browser and go to http://localhost:8080");
+        System.out.println("✓ Server running on port " + port);
     }
 
     // ─── SERVE FRONTEND ──────────────────────────────────────────────────────
