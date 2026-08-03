@@ -7,6 +7,7 @@ import com.tms.dao.TransactionDAO;
 import com.tms.db.DBConnection;
 import com.tms.model.Account;
 import com.tms.model.Transaction;
+import java.sql.Statement;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -53,6 +54,42 @@ public class AppServer {
         }
     }
 
+    private static void initializeSchema() {
+    String[] statements = {
+        "CREATE TABLE IF NOT EXISTS accounts (" +
+        "id INT AUTO_INCREMENT PRIMARY KEY," +
+        "account_number VARCHAR(20) UNIQUE NOT NULL," +
+        "holder_name VARCHAR(100) NOT NULL," +
+        "balance DOUBLE DEFAULT 0.0," +
+        "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+
+        "CREATE TABLE IF NOT EXISTS transactions (" +
+        "id INT AUTO_INCREMENT PRIMARY KEY," +
+        "account_id INT NOT NULL," +
+        "type ENUM('DEPOSIT','WITHDRAW','TRANSFER_IN','TRANSFER_OUT') NOT NULL," +
+        "amount DOUBLE NOT NULL," +
+        "description VARCHAR(255)," +
+        "related_account VARCHAR(20)," +
+        "transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+        "FOREIGN KEY (account_id) REFERENCES accounts(id))",
+
+        "INSERT IGNORE INTO accounts (account_number, holder_name, balance) VALUES " +
+        "('ACC001','Indra Chaganti',15000.00)," +
+        "('ACC002','Ravi Kumar',8500.00)," +
+        "('ACC003','Priya Singh',22000.00)"
+    };
+
+    try (java.sql.Statement stmt = DBConnection.getConnection().createStatement()) {
+        for (String sql : statements) {
+            stmt.executeUpdate(sql);
+        }
+        System.out.println("✓ Schema initialized (tables ready)");
+    } catch (Exception e) {
+        System.out.println("✗ Schema initialization failed");
+        e.printStackTrace();
+    }
+}
+     
     // ─── GET ALL ACCOUNTS ────────────────────────────────────────────────────
     static void handleAccounts(HttpExchange ex) throws IOException {
         addCors(ex);
