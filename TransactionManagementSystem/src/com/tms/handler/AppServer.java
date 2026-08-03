@@ -20,7 +20,9 @@ public class AppServer {
     static TransactionDAO transactionDAO = new TransactionDAO();
 
     public static void main(String[] args) throws Exception {
+        //DBConnection.getConnection();
         DBConnection.getConnection();
+        initializeSchema();
    int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
    HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
